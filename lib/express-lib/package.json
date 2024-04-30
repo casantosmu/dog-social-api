@@ -1,0 +1,13 @@
+{
+  "name": "@dog-social-api/express-lib",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^1.5.2"
+  }
+}

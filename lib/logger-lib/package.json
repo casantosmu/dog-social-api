@@ -1,0 +1,11 @@
+{
+  "name": "@dog-social-api/logger-lib",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "pino": "^9.0.0",
+    "pino-pretty": "^11.0.0"
+  }
+}

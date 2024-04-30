@@ -1,0 +1,24 @@
+{
+  "name": "dog-social-api",
+  "version": "1.0.0",
+  "engines": {
+    "node": "^20.9.0"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run start -w @dog-social-api/user-service\"",
+    "dev": "concurrently \"npm run dev -w @dog-social-api/user-service\"",
+    "test": "concurrently \"npm run test -w @dog-social-api/express-lib\"",
+    "lint": "xo && redocly lint",
+    "format": "xo --fix",
+    "openapi:preview": "redocly preview-docs"
+  },
+  "workspaces": [
+    "lib/*",
+    "services/*"
+  ],
+  "devDependencies": {
+    "@redocly/cli": "^1.12.0",
+    "concurrently": "^8.2.2",
+    "xo": "^0.58.0"
+  }
+}

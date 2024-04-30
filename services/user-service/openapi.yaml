@@ -1,0 +1,38 @@
+openapi: 3.1.0
+
+info:
+  version: 1.0.0
+  title: User API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  description: This is the API docs for the user API.
+
+servers:
+    - url: 'https://{host}/api/v1'
+      variables:
+        host:
+          default: api.example.com
+          description: Example host
+
+tags:
+  - name: Hello world
+    description: Example echo operations.
+
+paths:
+  '/users':
+    get:
+      tags:
+        - Hello world
+      summary: Get Hello world
+      operationId: getHelloWorld
+      security: []
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Bad request
