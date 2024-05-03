@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  run-migrations:
+    build: 
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    env_file: .env.docker-compose
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["node", "services/user-service/repositories/migrations/0000-initial.js"]
+
+  user-service:
+    build: 
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    ports:
+      - "3000:3000"
+    env_file: .env.docker-compose
+    depends_on:
+      postgres:
+        condition: service_healthy
+      run-migrations:
+        condition: service_completed_successfully
+
+volumes:
+  postgres:
