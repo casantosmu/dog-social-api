@@ -18,11 +18,16 @@ npm run dev
 
 ## Docker Containers
 
-To build and run the user-service in a Docker container, use the following commands:
+The project includes Docker Compose for managing containers. To run the entire project with Docker Compose, use the following command:
 
 ```bash
-docker build -t dog-social-api/user-service -f services/user-service/Dockerfile .
-docker run -p 3000:3000 --name dog-social-api-user-service -d dog-social-api/user-service
+docker-compose up
+```
+
+If you only want to spin up the database and access it locally, you can do so by running the following command:
+
+```bash
+docker-compose up -d postgres run-migrations
 ```
 
 ## Linting and Formatting

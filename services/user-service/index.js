@@ -4,20 +4,31 @@ import {createServer} from '@dog-social-api/express-lib';
 import {PinoLogger} from '@dog-social-api/logger-lib';
 import {config} from './config.js';
 import {createApp} from './express/app.js';
-
-const {port} = config.server;
+import {PostgresPool} from './repositories/postgres-pool.js';
 
 const context = new AsyncLocalStorage();
+
 const logger = new PinoLogger({
 	name: 'user-service',
 	level: config.logger.level,
 	pretty: config.isDevelopment,
 	context,
 });
+
+const postgresPool = new PostgresPool({
+	host: config.postgres.host,
+	port: config.postgres.port,
+	user: config.postgres.user,
+	password: config.postgres.password,
+	database: config.postgres.database,
+	logger,
+});
+
 const app = createApp({logger, context});
 const server = createServer({app, logger});
 
-await server.start(port);
+await postgresPool.start();
+await server.start(config.server.port);
 
 closeWithGrace({logger}, async ({signal, err}) => {
 	if (err) {
@@ -27,4 +38,5 @@ closeWithGrace({logger}, async ({signal, err}) => {
 	}
 
 	await server.stop();
+	await postgresPool.stop();
 });
