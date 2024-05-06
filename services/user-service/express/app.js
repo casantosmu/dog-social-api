@@ -16,7 +16,7 @@ export const createApp = ({logger, context}) => {
 
 	routes({app, logger});
 
-	errorHandlers({app, logger});
+	errorHandlers(app, {logger});
 
 	return app;
 };

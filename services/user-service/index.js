@@ -25,10 +25,12 @@ const postgresPool = new PostgresPool({
 });
 
 const app = createApp({logger, context});
-const server = createServer({app, logger});
+const server = createServer({
+	app, port: config.server.port, logger,
+});
 
 await postgresPool.start();
-await server.start(config.server.port);
+await server.start();
 
 closeWithGrace({logger}, async ({signal, err}) => {
 	if (err) {
