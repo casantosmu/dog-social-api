@@ -4,8 +4,6 @@ This repository contains the API for a social network dedicated to dog lovers.
 
 ## Environment Variables
 
-This repository contains the API for a social network dedicated to dog lovers.
-
 Before starting the project, make sure to configure the required environment variables. You can find the necessary variables in the .env.example file. Copy this file to .env and modify it with your specific settings.
 
 ## Usage
