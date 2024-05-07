@@ -1,11 +1,11 @@
 export class UserRepositoryFactory {
-	#postgresUserRepository;
+	#northUserRepository;
 
-	constructor({postgresUserRepository}) {
-		this.#postgresUserRepository = postgresUserRepository;
+	constructor({northUserRepository}) {
+		this.#northUserRepository = northUserRepository;
 	}
 
 	fromLocation() {
-		return this.#postgresUserRepository;
+		return this.#northUserRepository;
 	}
 }

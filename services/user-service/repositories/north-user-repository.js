@@ -1,4 +1,4 @@
-export class PostgresUserRepository {
+export class NorthUserRepository {
 	#pool;
 
 	constructor({pool}) {
