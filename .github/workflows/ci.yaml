@@ -44,5 +44,11 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Copy .env files
+        run: cp services/user-service/.env.example services/user-service/.env
+
+      - name: Setup postgres
+        run: docker compose up -d postgres run-migrations
+
       - name: Run tests
         run: npm run test

@@ -4,6 +4,10 @@ import {PinoLogger} from '@dog-social-api/logger-lib';
 import {config} from './config.js';
 import {createApp} from './express/app.js';
 import {PostgresPool} from './repositories/postgres-pool.js';
+import {createUserUseCase} from './use-cases/create-user-use-case.js';
+import {NorthUserRepository} from './repositories/north-user-repository.js';
+import {UserRepositoryFactory} from './repositories/user-repository-factory.js';
+import {SouthUserRepository} from './repositories/south-user-repository.js';
 
 const context = new AsyncLocalStorage();
 
@@ -23,7 +27,27 @@ export const postgresPool = new PostgresPool({
 	logger,
 });
 
-const app = createApp({logger, context});
+export const northUserRepository = new NorthUserRepository({
+	pool: postgresPool,
+});
+
+export const app = createApp(
+	{logger, context},
+	{
+		createUserUseCase: createUserUseCase({
+			userRepositoryFactory: new UserRepositoryFactory({
+				northUserRepository: new NorthUserRepository({
+					pool: postgresPool,
+				}),
+				southUserRepository: new SouthUserRepository({
+					baseUrl: config.southUserApi.baseUrl,
+					apiKey: config.southUserApi.apiKey,
+					timeout: config.southUserApi.timeout,
+				}),
+			}),
+		}),
+	},
+);
 
 export const server = createServer({
 	app, port: config.server.port, logger,
