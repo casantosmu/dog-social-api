@@ -1,11 +1,17 @@
 export class UserRepositoryFactory {
 	#northUserRepository;
+	#southUserRepository;
 
-	constructor({northUserRepository}) {
+	constructor({northUserRepository, southUserRepository}) {
 		this.#northUserRepository = northUserRepository;
+		this.#southUserRepository = southUserRepository;
 	}
 
-	fromLocation() {
-		return this.#northUserRepository;
+	fromLocation(location) {
+		if (location.isNorthernHemisphere()) {
+			return this.#northUserRepository;
+		}
+
+		return this.#southUserRepository;
 	}
 }

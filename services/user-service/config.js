@@ -17,4 +17,9 @@ export const config = {
 		password: process.env.POSTGRES_PASSWORD ?? 'postgres',
 		database: process.env.POSTGRES_DB ?? 'postgres',
 	},
+	southUserApi: {
+		baseUrl: process.env.SOUTH_USER_API_BASE_URL,
+		apiKey: process.env.SOUTH_USER_API_KEY,
+		timeout: Number(process.env.SOUTH_USER_API_TIMEOUT ?? 5000),
+	},
 };
