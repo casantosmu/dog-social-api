@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import {errorHandlers, httpLogger, requestId} from '@dog-social-api/express-lib';
 import {routes} from './routes.js';
 
-export const createApp = ({logger, context}) => {
+export const createApp = ({logger, context}, {createUserUseCase}) => {
 	const app = express();
 
 	app.disable('x-powered-by');
@@ -14,7 +14,7 @@ export const createApp = ({logger, context}) => {
 	app.use(express.urlencoded({extended: true}));
 	app.use(express.json());
 
-	routes({app, logger});
+	routes(app, {createUserUseCase});
 
 	errorHandlers(app, {logger});
 
