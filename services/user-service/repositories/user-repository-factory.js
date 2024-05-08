@@ -14,4 +14,18 @@ export class UserRepositoryFactory {
 
 		return this.#southUserRepository;
 	}
+
+	async fromUserId(userId) {
+		const existsInNorth = await this.#northUserRepository.existsById(userId);
+		if (existsInNorth) {
+			return this.#northUserRepository;
+		}
+
+		const existsInSouth = await this.#southUserRepository.existsById(userId);
+		if (existsInSouth) {
+			return this.#southUserRepository;
+		}
+
+		return undefined;
+	}
 }
