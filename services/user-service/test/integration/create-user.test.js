@@ -24,7 +24,7 @@ afterEach(() => {
 });
 
 describe('POST /v1/users', () => {
-	it('should store user in local database if it\'s from the northern hemisphere', async () => {
+	it('should store user in local database if user is from the northern hemisphere', async () => {
 		const northernUser = {
 			username: faker.word.sample({length: {min: 2, max: 15}}),
 			email: faker.internet.email(),
@@ -47,7 +47,7 @@ describe('POST /v1/users', () => {
 		expect(userExists).toBeTruthy();
 	});
 
-	it('should send user data to external API if it\'s from the southern hemisphere', async () => {
+	it('should send user data to external API if user is from the southern hemisphere', async () => {
 		const southernUser = {
 			username: faker.word.sample({length: {min: 2, max: 15}}),
 			email: faker.internet.email(),
@@ -70,6 +70,12 @@ describe('POST /v1/users', () => {
 				email: southernUser.email,
 			})
 			.reply(200, {users: []});
+
+		nock(config.southUserApi.baseUrl)
+			.get(/\/v1\/users\/.*/)
+			.reply(404, {
+				code: 'USER_NOT_FOUND',
+			});
 
 		const scope = nock(config.southUserApi.baseUrl)
 			.post('/v1/users', {

@@ -9,6 +9,7 @@ export const ErrorCodes = {
 	INVALID_EMAIL_FORMAT: 'INVALID_EMAIL_FORMAT',
 	USER_EMAIL_EXISTS: 'USER_EMAIL_EXISTS',
 	USERNAME_EXISTS: 'USERNAME_EXISTS',
+	USER_NOT_FOUND: 'USER_NOT_FOUND',
 };
 
 class CoreError extends Error {
@@ -19,5 +20,7 @@ class CoreError extends Error {
 }
 
 export class BadRequestError extends CoreError {}
+
+export class NotFoundError extends CoreError {}
 
 export class ConflictError extends CoreError {}

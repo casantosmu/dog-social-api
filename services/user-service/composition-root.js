@@ -5,6 +5,7 @@ import {config} from './config.js';
 import {createApp} from './express/app.js';
 import {PostgresPool} from './repositories/postgres-pool.js';
 import {createUserUseCase} from './use-cases/create-user-use-case.js';
+import {updateUserUseCase} from './use-cases/update-user-use-case.js';
 import {NorthUserRepository} from './repositories/north-user-repository.js';
 import {UserRepositoryFactory} from './repositories/user-repository-factory.js';
 import {SouthUserRepository} from './repositories/south-user-repository.js';
@@ -31,20 +32,27 @@ export const northUserRepository = new NorthUserRepository({
 	pool: postgresPool,
 });
 
+const southUserRepository = new SouthUserRepository({
+	baseUrl: config.southUserApi.baseUrl,
+	apiKey: config.southUserApi.apiKey,
+	timeout: config.southUserApi.timeout,
+});
+
+const userRepositoryFactory = new UserRepositoryFactory({
+	northUserRepository,
+	southUserRepository,
+});
+
 export const app = createApp(
-	{logger, context},
+	{
+		logger, context,
+	},
 	{
 		createUserUseCase: createUserUseCase({
-			userRepositoryFactory: new UserRepositoryFactory({
-				northUserRepository: new NorthUserRepository({
-					pool: postgresPool,
-				}),
-				southUserRepository: new SouthUserRepository({
-					baseUrl: config.southUserApi.baseUrl,
-					apiKey: config.southUserApi.apiKey,
-					timeout: config.southUserApi.timeout,
-				}),
-			}),
+			userRepositoryFactory,
+		}),
+		updateUserUseCase: updateUserUseCase({
+			userRepositoryFactory,
 		}),
 	},
 );

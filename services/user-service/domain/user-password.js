@@ -37,4 +37,12 @@ export class UserPassword {
 
 		return this.value;
 	}
+
+	async compare(password) {
+		if (!this.#isHashed) {
+			return this.value === password;
+		}
+
+		return argon2.verify(this.value, password);
+	}
 }
