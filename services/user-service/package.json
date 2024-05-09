@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node .",
     "dev": "node --env-file=.env --watch --inspect .",
-    "test": "cross-env LOG_LEVEL=silent vitest",
+    "test": "vitest",
     "migrate": "node --env-file=.env repositories/migrations/0000-initial.js"
   },
   "dependencies": {
@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
-    "cross-env": "^7.0.3",
     "nock": "^14.0.0-beta.6",
     "supertest": "^7.0.0",
     "vitest": "^1.6.0"

@@ -53,7 +53,7 @@ npm run format
 To run the tests for the project, use:
 
 ```bash
-npm test
+LOG_LEVEL=silent npm run test
 ```
 
 ## Preview API Documentation
