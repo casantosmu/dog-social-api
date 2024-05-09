@@ -38,6 +38,7 @@ const southUserRepository = new SouthUserRepository({
 	baseUrl: config.southUserApi.baseUrl,
 	apiKey: config.southUserApi.apiKey,
 	timeout: config.southUserApi.timeout,
+	logger,
 });
 
 const userRepositoryFactory = new UserRepositoryFactory({

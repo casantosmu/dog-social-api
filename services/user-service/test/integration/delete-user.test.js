@@ -39,7 +39,7 @@ describe('DELETE /v1/users/:id', () => {
 			language: new UserLanguage('en'),
 		});
 
-		await northUserRepository.save(user);
+		await northUserRepository.insert(user);
 
 		const response = await supertest(app)
 			.delete(`/v1/users/${user.id.value}`)

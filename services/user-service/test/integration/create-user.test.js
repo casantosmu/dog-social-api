@@ -71,12 +71,6 @@ describe('POST /v1/users', () => {
 			})
 			.reply(200, {users: []});
 
-		nock(config.southUserApi.baseUrl)
-			.get(/\/v1\/users\/.*/)
-			.reply(404, {
-				code: 'USER_NOT_FOUND',
-			});
-
 		const scope = nock(config.southUserApi.baseUrl)
 			.post('/v1/users', {
 				id: /.+/i,

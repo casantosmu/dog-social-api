@@ -51,7 +51,7 @@ export const updateUserUseCase = ({userRepositoryFactory}) => async (userId, use
 		user.language = new UserLanguage(userUpdateDto.language);
 	}
 
-	await userRepository.save(user);
+	await userRepository.update(user);
 
 	return user;
 };

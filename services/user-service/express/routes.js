@@ -1,4 +1,4 @@
-import {HttpError, httpStatusCode} from '@dog-social-api/express-lib';
+import {HttpError, HttpStatusCodes} from '@dog-social-api/express-lib';
 import {Router as createRouter} from 'express';
 import {BadRequestError, ConflictError, NotFoundError} from '../domain/error.js';
 
@@ -9,15 +9,15 @@ export const routes = (app, {createUserUseCase, updateUserUseCase, deleteUserUse
 		try {
 			const user = await createUserUseCase(request.body);
 			response
-				.status(httpStatusCode.created)
+				.status(HttpStatusCodes.CREATED)
 				.json({
 					id: user.id.value,
 				});
 		} catch (error) {
 			if (error instanceof BadRequestError) {
-				next(new HttpError(httpStatusCode.badRequest, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.BAD_REQUEST, error.code, error.message));
 			} else if (error instanceof ConflictError) {
-				next(new HttpError(httpStatusCode.conflict, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.CONFLICT, error.code, error.message));
 			} else {
 				next(error);
 			}
@@ -28,7 +28,7 @@ export const routes = (app, {createUserUseCase, updateUserUseCase, deleteUserUse
 		try {
 			const user = await getUserByIdUseCase(request.params.id);
 			response
-				.status(httpStatusCode.ok)
+				.status(HttpStatusCodes.OK)
 				.json({
 					id: user.id.value,
 					username: user.username.value,
@@ -39,9 +39,9 @@ export const routes = (app, {createUserUseCase, updateUserUseCase, deleteUserUse
 				});
 		} catch (error) {
 			if (error instanceof BadRequestError) {
-				next(new HttpError(httpStatusCode.badRequest, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.BAD_REQUEST, error.code, error.message));
 			} else if (error instanceof NotFoundError) {
-				next(new HttpError(httpStatusCode.notFound, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.NOT_FOUND, error.code, error.message));
 			} else {
 				next(error);
 			}
@@ -52,17 +52,17 @@ export const routes = (app, {createUserUseCase, updateUserUseCase, deleteUserUse
 		try {
 			const user = await updateUserUseCase(request.params.id, request.body);
 			response
-				.status(httpStatusCode.ok)
+				.status(HttpStatusCodes.OK)
 				.json({
 					id: user.id.value,
 				});
 		} catch (error) {
 			if (error instanceof BadRequestError) {
-				next(new HttpError(httpStatusCode.badRequest, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.BAD_REQUEST, error.code, error.message));
 			} else if (error instanceof NotFoundError) {
-				next(new HttpError(httpStatusCode.notFound, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.NOT_FOUND, error.code, error.message));
 			} else if (error instanceof ConflictError) {
-				next(new HttpError(httpStatusCode.conflict, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.CONFLICT, error.code, error.message));
 			} else {
 				next(error);
 			}
@@ -73,15 +73,15 @@ export const routes = (app, {createUserUseCase, updateUserUseCase, deleteUserUse
 		try {
 			const user = await deleteUserUseCase(request.params.id);
 			response
-				.status(httpStatusCode.ok)
+				.status(HttpStatusCodes.OK)
 				.json({
 					id: user.id.value,
 				});
 		} catch (error) {
 			if (error instanceof BadRequestError) {
-				next(new HttpError(httpStatusCode.badRequest, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.BAD_REQUEST, error.code, error.message));
 			} else if (error instanceof NotFoundError) {
-				next(new HttpError(httpStatusCode.notFound, error.code, error.message));
+				next(new HttpError(HttpStatusCodes.NOT_FOUND, error.code, error.message));
 			} else {
 				next(error);
 			}
