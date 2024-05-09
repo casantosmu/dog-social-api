@@ -6,6 +6,7 @@ import {createApp} from './express/app.js';
 import {PostgresPool} from './repositories/postgres-pool.js';
 import {createUserUseCase} from './use-cases/create-user-use-case.js';
 import {updateUserUseCase} from './use-cases/update-user-use-case.js';
+import {deleteUserUseCase} from './use-cases/delete-user-use-case.js';
 import {NorthUserRepository} from './repositories/north-user-repository.js';
 import {UserRepositoryFactory} from './repositories/user-repository-factory.js';
 import {SouthUserRepository} from './repositories/south-user-repository.js';
@@ -52,6 +53,9 @@ export const app = createApp(
 			userRepositoryFactory,
 		}),
 		updateUserUseCase: updateUserUseCase({
+			userRepositoryFactory,
+		}),
+		deleteUserUseCase: deleteUserUseCase({
 			userRepositoryFactory,
 		}),
 	},

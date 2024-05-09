@@ -2,7 +2,7 @@ import {HttpError, httpStatusCode} from '@dog-social-api/express-lib';
 import {Router as createRouter} from 'express';
 import {BadRequestError, ConflictError, NotFoundError} from '../domain/error.js';
 
-export const routes = (app, {createUserUseCase, updateUserUseCase}) => {
+export const routes = (app, {createUserUseCase, updateUserUseCase, deleteUserUseCase}) => {
 	const router = createRouter();
 
 	router.post('/', async (request, response, next) => {
@@ -39,6 +39,25 @@ export const routes = (app, {createUserUseCase, updateUserUseCase}) => {
 				next(new HttpError(httpStatusCode.notFound, error.code, error.message));
 			} else if (error instanceof ConflictError) {
 				next(new HttpError(httpStatusCode.conflict, error.code, error.message));
+			} else {
+				next(error);
+			}
+		}
+	});
+
+	router.delete('/:id', async (request, response, next) => {
+		try {
+			const user = await deleteUserUseCase(request.params.id);
+			response
+				.status(httpStatusCode.ok)
+				.json({
+					id: user.id.value,
+				});
+		} catch (error) {
+			if (error instanceof BadRequestError) {
+				next(new HttpError(httpStatusCode.badRequest, error.code, error.message));
+			} else if (error instanceof NotFoundError) {
+				next(new HttpError(httpStatusCode.notFound, error.code, error.message));
 			} else {
 				next(error);
 			}

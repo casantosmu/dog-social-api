@@ -93,4 +93,13 @@ export class NorthUserRepository {
 		];
 		await this.#pool.query(sql, values);
 	}
+
+	async delete(user) {
+		if (!user.isDeleted) {
+			throw new Error('User must be marked as deleted to perform this operation.');
+		}
+
+		const sql = 'DELETE FROM users WHERE user_id = $1';
+		await this.#pool.query(sql, [user.id.value]);
+	}
 }
