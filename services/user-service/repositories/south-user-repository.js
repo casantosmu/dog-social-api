@@ -136,4 +136,25 @@ export class SouthUserRepository {
 
 		return response.json();
 	}
+
+	async delete(user) {
+		if (!user.isDeleted) {
+			throw new Error('User must be marked as deleted to perform this operation.');
+		}
+
+		const url = new URL(`/v1/users/${user.id.value}`, this.#baseUrl);
+
+		const response = await fetch(url, {
+			method: 'DELETE',
+			headers: {
+				Authorization: `Bearer ${this.#apiKey}`,
+				Accept: 'application/json',
+			},
+			signal: AbortSignal.timeout(this.#timeout),
+		});
+
+		if (!response.ok) {
+			throw new Error('Unexpected response from server');
+		}
+	}
 }

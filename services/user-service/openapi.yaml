@@ -114,6 +114,34 @@ paths:
           $ref: "#/components/responses/Conflict"
       security: []
 
+    delete:
+      tags:
+        - Users
+      summary: Delete an existing user
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to be deleted
+      responses:
+        "200":
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security: []
+
 components:
   schemas:
     Error:
