@@ -1,4 +1,4 @@
-import {httpStatusCode} from '@dog-social-api/express-lib';
+import {HttpStatusCodes} from '@dog-social-api/express-lib';
 import {User} from '../domain/user.js';
 import {UserName} from '../domain/user-name.js';
 import {UserEmail} from '../domain/user-email.js';
@@ -96,7 +96,7 @@ export class SouthUserRepository {
 			signal: AbortSignal.timeout(this.#timeout),
 		});
 
-		if (response.status === httpStatusCode.notFound) {
+		if (response.status === HttpStatusCodes.NOT_FOUND) {
 			const error = await response.json();
 			if (error.code === 'USER_NOT_FOUND') {
 				return undefined;
