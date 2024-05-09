@@ -67,6 +67,51 @@ paths:
       security: []
 
   "/users/{id}":
+    get:
+      tags:
+        - Users
+      summary: Retrieve a user by ID
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to retrieve
+      responses:
+        "200":
+          description: Successful retrieval
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - username
+                  - email
+                  - latitude
+                  - longitude
+                  - language
+                properties:
+                  id:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  latitude:
+                    type: number
+                  longitude:
+                    type: number
+                  language:
+                    type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security: []
+
     put:
       tags:
         - Users
