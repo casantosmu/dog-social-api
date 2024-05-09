@@ -51,11 +51,35 @@ export class SouthUserRepository {
 		return result.users.length > 0;
 	}
 
-	async save(user) {
-		const userExists = await this.existsById(user.id.value);
+	async insert(user) {
+		const url = new URL('/v1/users', this.#baseUrl);
+		const body = {
+			id: user.id.value,
+			username: user.username.value,
+			email: user.email.value,
+			password: user.password.value,
+			latitude: user.location.value.latitude,
+			longitude: user.location.value.longitude,
+			language: user.language.value,
+		};
 
-		const url = new URL(userExists ? `/v1/users/${user.id.value}` : '/v1/users', this.#baseUrl);
-		const method = userExists ? 'PUT' : 'POST';
+		const response = await fetch(url, {
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: {
+				Authorization: `Bearer ${this.#apiKey}`,
+				'Content-Type': 'application/json',
+			},
+			signal: AbortSignal.timeout(this.#timeout),
+		});
+
+		if (!response.ok) {
+			throw new Error('Unexpected response from server');
+		}
+	}
+
+	async update(user) {
+		const url = new URL(`/v1/users/${user.id.value}`, this.#baseUrl);
 		const body = {
 			username: user.username.value,
 			email: user.email.value,
@@ -65,12 +89,8 @@ export class SouthUserRepository {
 			language: user.language.value,
 		};
 
-		if (!userExists) {
-			body.id = user.id.value;
-		}
-
 		const response = await fetch(url, {
-			method,
+			method: 'PUT',
 			body: JSON.stringify(body),
 			headers: {
 				Authorization: `Bearer ${this.#apiKey}`,

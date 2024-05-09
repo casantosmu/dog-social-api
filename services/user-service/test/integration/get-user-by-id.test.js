@@ -39,7 +39,7 @@ describe('GET /v1/users/:id', () => {
 			language: new UserLanguage('en'),
 		});
 
-		await northUserRepository.save(user);
+		await northUserRepository.insert(user);
 
 		const response = await supertest(app)
 			.get(`/v1/users/${user.id.value}`)

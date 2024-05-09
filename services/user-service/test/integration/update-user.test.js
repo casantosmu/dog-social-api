@@ -48,7 +48,7 @@ describe('PUT /v1/users/:id', () => {
 			language: 'de',
 		};
 
-		await northUserRepository.save(user);
+		await northUserRepository.insert(user);
 
 		const response = await supertest(app)
 			.put(`/v1/users/${user.id.value}`)

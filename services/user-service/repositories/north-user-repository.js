@@ -63,7 +63,7 @@ export class NorthUserRepository {
 		return Boolean(result.rows[0].exists);
 	}
 
-	async save(user) {
+	async insert(user) {
 		const sql = `
 		INSERT INTO users (
 			user_id, username, email, password_hash, 
@@ -72,14 +72,31 @@ export class NorthUserRepository {
 		VALUES (
 			$1, $2, $3, $4, $5, $6, $7
 		)
-		ON CONFLICT (user_id) DO UPDATE 
+		;`;
+		const passwordHash = await user.password.getHashed();
+		const values = [
+			user.id.value,
+			user.username.value,
+			user.email.value,
+			passwordHash,
+			user.location.value.latitude,
+			user.location.value.longitude,
+			user.language.value,
+		];
+		await this.#pool.query(sql, values);
+	}
+
+	async update(user) {
+		const sql = `
+		UPDATE users
 		SET 
-			username = EXCLUDED.username,
-			email = EXCLUDED.email,
-			password_hash = EXCLUDED.password_hash,
-			latitude = EXCLUDED.latitude,
-			longitude = EXCLUDED.longitude,
-			language = EXCLUDED.language
+			username = $2,
+			email = $3,
+			password_hash = $4,
+			latitude = $5,
+			longitude = $6,
+			language = $7
+		WHERE user_id = $1
 		;`;
 		const passwordHash = await user.password.getHashed();
 		const values = [

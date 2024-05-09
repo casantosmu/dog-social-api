@@ -29,7 +29,7 @@ export const createUserUseCase = ({userRepositoryFactory}) => async userDto => {
 		username, email, password, location, language,
 	});
 
-	await userRepository.save(user);
+	await userRepository.insert(user);
 
 	return user;
 };
