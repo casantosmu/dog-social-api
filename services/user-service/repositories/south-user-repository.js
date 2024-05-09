@@ -11,11 +11,13 @@ export class SouthUserRepository {
 	#baseUrl;
 	#apiKey;
 	#timeout;
+	#logger;
 
-	constructor({baseUrl, apiKey, timeout}) {
+	constructor({baseUrl, apiKey, timeout, logger}) {
 		this.#baseUrl = baseUrl;
 		this.#apiKey = apiKey;
 		this.#timeout = timeout;
+		this.#logger = logger;
 	}
 
 	async findById(userId) {
@@ -52,7 +54,6 @@ export class SouthUserRepository {
 	}
 
 	async insert(user) {
-		const url = new URL('/v1/users', this.#baseUrl);
 		const body = {
 			id: user.id.value,
 			username: user.username.value,
@@ -63,23 +64,14 @@ export class SouthUserRepository {
 			language: user.language.value,
 		};
 
-		const response = await fetch(url, {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				Authorization: `Bearer ${this.#apiKey}`,
-				'Content-Type': 'application/json',
-			},
-			signal: AbortSignal.timeout(this.#timeout),
-		});
+		const response = await this.#request('/v1/users', 'POST', body);
 
 		if (!response.ok) {
-			throw new Error('Unexpected response from server');
+			throw new Error(`Failed to insert user: ${response.statusText}`);
 		}
 	}
 
 	async update(user) {
-		const url = new URL(`/v1/users/${user.id.value}`, this.#baseUrl);
 		const body = {
 			username: user.username.value,
 			email: user.email.value,
@@ -89,32 +81,27 @@ export class SouthUserRepository {
 			language: user.language.value,
 		};
 
-		const response = await fetch(url, {
-			method: 'PUT',
-			body: JSON.stringify(body),
-			headers: {
-				Authorization: `Bearer ${this.#apiKey}`,
-				'Content-Type': 'application/json',
-			},
-			signal: AbortSignal.timeout(this.#timeout),
-		});
+		const response = await this.#request(`/v1/users/${user.id.value}`, 'PUT', body);
 
 		if (!response.ok) {
-			throw new Error('Unexpected response from server');
+			throw new Error(`Failed to update user: ${response.statusText}`);
+		}
+	}
+
+	async delete(user) {
+		if (!user.isDeleted) {
+			throw new Error('User must be marked as deleted to perform this operation.');
+		}
+
+		const response = await this.#request(`/v1/users/${user.id.value}`, 'DELETE');
+
+		if (!response.ok) {
+			throw new Error(`Failed to delete user: ${response.statusText}`);
 		}
 	}
 
 	async #findById(userId) {
-		const url = new URL(`/v1/users/${userId}`, this.#baseUrl);
-
-		const response = await fetch(url, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${this.#apiKey}`,
-				Accept: 'application/json',
-			},
-			signal: AbortSignal.timeout(this.#timeout),
-		});
+		const response = await this.#request(`/v1/users/${userId}`, 'GET');
 
 		if (response.status === HttpStatusCodes.NOT_FOUND) {
 			const error = await response.json();
@@ -141,14 +128,7 @@ export class SouthUserRepository {
 			url.searchParams.append('email', email);
 		}
 
-		const response = await fetch(url, {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${this.#apiKey}`,
-				Accept: 'application/json',
-			},
-			signal: AbortSignal.timeout(this.#timeout),
-		});
+		const response = await this.#request(url, 'GET');
 
 		if (!response.ok) {
 			throw new Error('Unexpected response from server');
@@ -157,24 +137,22 @@ export class SouthUserRepository {
 		return response.json();
 	}
 
-	async delete(user) {
-		if (!user.isDeleted) {
-			throw new Error('User must be marked as deleted to perform this operation.');
-		}
-
-		const url = new URL(`/v1/users/${user.id.value}`, this.#baseUrl);
-
-		const response = await fetch(url, {
-			method: 'DELETE',
+	async #request(path, method, body = null) {
+		const url = new URL(path, this.#baseUrl);
+		const options = {
+			method,
 			headers: {
 				Authorization: `Bearer ${this.#apiKey}`,
+				'Content-Type': 'application/json',
 				Accept: 'application/json',
 			},
 			signal: AbortSignal.timeout(this.#timeout),
-		});
-
-		if (!response.ok) {
-			throw new Error('Unexpected response from server');
+		};
+		if (body) {
+			options.body = JSON.stringify(body);
 		}
+
+		this.#logger.debug(`Request: Sending ${method} request to ${url}`);
+		return fetch(url, options);
 	}
 }
